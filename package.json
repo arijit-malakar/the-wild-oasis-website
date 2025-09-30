@@ -6,10 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
+    "prod": "next build && next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@supabase/supabase-js": "^2.58.0",
     "date-fns": "^4.1.0",
     "next": "15.5.4",
     "react": "19.1.0",
