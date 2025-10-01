@@ -7,3 +7,5 @@ export type CabinType = {
   description: string;
   image: string;
 };
+
+export type CabinCapacityFilter = "small" | "medium" | "large" | "all";
