@@ -1,12 +1,10 @@
 import { CabinType } from "@/app/_types/cabinType";
+import { GuestType } from "../_types/guestType";
 import { SettingsType } from "../_types/settingsType";
 
 import { notFound } from "next/navigation";
 import { eachDayOfInterval } from "date-fns";
 import { supabase } from "./supabase";
-
-/////////////
-// GET
 
 export const getCabin = async (id: string): Promise<CabinType> => {
   const { data, error } = await supabase
@@ -37,6 +35,29 @@ export const getCabins = async (): Promise<
   if (error) {
     console.error(error);
     throw new Error("Cabins could not be loaded");
+  }
+
+  return data;
+};
+
+export const getGuest = async (email: string): Promise<GuestType> => {
+  const { data } = await supabase
+    .from("guests")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  return data;
+};
+
+export const createGuest = async (
+  newGuest: Pick<GuestType, "email" | "fullName">
+) => {
+  const { data, error } = await supabase.from("guests").insert([newGuest]);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Guest could not be created");
   }
 
   return data;
