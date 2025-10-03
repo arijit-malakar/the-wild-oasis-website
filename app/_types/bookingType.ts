@@ -1,4 +1,5 @@
 import type { CabinType } from "./cabinType";
+import type { GuestType } from "./guestType";
 
 export interface BookingType {
   id: number;
@@ -7,13 +8,9 @@ export interface BookingType {
   endDate: Date;
   numNights: number;
   numGuests: number;
-  status: "unconfirmed" | "checked-in" | "checked-out";
-  cabinPrice: number;
-  extrasPrice: number;
   totalPrice: number;
-  hasBreakfast: boolean;
-  isPaid: boolean;
   observations: string;
+  guestId: GuestType["id"];
+  cabinId: CabinType["id"];
   cabins: Pick<CabinType, "name" | "image">;
-  guestId: number;
 }

@@ -3,9 +3,15 @@
 import { SettingsType } from "../_types/settingsType";
 import { CabinType } from "../_types/cabinType";
 
-import { DayPicker } from "react-day-picker";
+import { DateRange, DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useReservation } from "./ReservationContext";
+import {
+  differenceInDays,
+  isPast,
+  isSameDay,
+  isWithinInterval,
+} from "date-fns";
 
 type DateSelectorProps = {
   settings: SettingsType;
@@ -13,14 +19,32 @@ type DateSelectorProps = {
   cabin: CabinType;
 };
 
-const DateSelector: React.FC<DateSelectorProps> = ({ settings }) => {
+const isAlreadyBooked = (range: DateRange | undefined, datesArr: Date[]) => {
+  if (!range || !range.from || !range.to) return false;
+
+  const { from, to } = range;
+
+  return datesArr.some((date) =>
+    isWithinInterval(date, { start: from, end: to })
+  );
+};
+
+const DateSelector: React.FC<DateSelectorProps> = ({
+  settings,
+  cabin,
+  bookedDates,
+}) => {
   const { range, setRange, resetRange } = useReservation();
 
-  // CHANGE (will get from bookedDates and cabin)
-  const regularPrice = 23;
-  const discount = 23;
-  const numNights = 23;
-  const cabinPrice = 23;
+  const displayRange = isAlreadyBooked(range, bookedDates) ? undefined : range;
+
+  const { regularPrice, discount } = cabin;
+
+  const numNights =
+    displayRange?.to && displayRange?.from
+      ? differenceInDays(displayRange.to, displayRange.from)
+      : 0;
+  const cabinPrice = numNights * (regularPrice - discount);
 
   const { minBookingLength, maxBookingLength } = settings;
 
@@ -30,14 +54,17 @@ const DateSelector: React.FC<DateSelectorProps> = ({ settings }) => {
         className="pt-12 place-self-center"
         mode="range"
         onSelect={setRange}
-        selected={range}
+        selected={displayRange}
         min={minBookingLength + 1}
         max={maxBookingLength}
         startMonth={new Date()}
         endMonth={new Date(new Date().getFullYear(), 5 * 12)}
         captionLayout="dropdown"
         numberOfMonths={2}
-        disabled={{ before: new Date() }}
+        disabled={(currDate) =>
+          isPast(currDate) ||
+          bookedDates.some((date) => isSameDay(date, currDate))
+        }
         navLayout="around"
       />
 

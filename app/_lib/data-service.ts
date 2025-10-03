@@ -1,6 +1,7 @@
 import { CabinType } from "@/app/_types/cabinType";
 import { GuestType } from "../_types/guestType";
 import { SettingsType } from "../_types/settingsType";
+import { BookingType } from "../_types/bookingType";
 
 import { notFound } from "next/navigation";
 import { eachDayOfInterval } from "date-fns";
@@ -29,9 +30,6 @@ export const getCabins = async (): Promise<
     .select("id, name, maxCapacity, regularPrice, discount, image")
     .order("name");
 
-  // For testing
-  // await new Promise((res) => setTimeout(res, 2000));
-
   if (error) {
     console.error(error);
     throw new Error("Cabins could not be loaded");
@@ -58,6 +56,45 @@ export const createGuest = async (
   if (error) {
     console.error(error);
     throw new Error("Guest could not be created");
+  }
+
+  return data;
+};
+
+export const getBookings = async (
+  guestId: number
+): Promise<Omit<BookingType, "observations">[]> => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(
+      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, cabins(name, image)"
+    )
+    .eq("guestId", guestId)
+    .order("startDate");
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not get loaded");
+  }
+
+  const bookings = data.map((booking) => ({
+    ...booking,
+    cabins: Array.isArray(booking.cabins) ? booking.cabins[0] : booking.cabins,
+  }));
+
+  return bookings;
+};
+
+export const getBooking = async (bookingId: string): Promise<BookingType> => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("id", bookingId)
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be loaded");
   }
 
   return data;

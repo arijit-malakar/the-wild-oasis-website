@@ -1,25 +1,10 @@
-"use client";
-
 import { GuestType } from "@/app/_types/guestType";
-import { useFormStatus } from "react-dom";
 import { updateProfile } from "@/app/_lib/actions";
+import SubmitButton from "./SubmitButton";
 
 interface UpdateProfileFormProps extends React.PropsWithChildren {
   guest: GuestType;
 }
-
-const Button = () => {
-  // Can be called inside a CC ('cos its a hook, afterall) that is used inside the form
-  const { pending } = useFormStatus();
-  return (
-    <button
-      className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"
-      disabled={pending}
-    >
-      {pending ? "Updating..." : "Update profile"}
-    </button>
-  );
-};
 
 const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({
   guest,
@@ -76,7 +61,7 @@ const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({
       </div>
 
       <div className="flex justify-end items-center gap-6">
-        <Button />
+        <SubmitButton pendingLabel="Updating...">Update profile</SubmitButton>
       </div>
     </form>
   );
