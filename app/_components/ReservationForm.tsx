@@ -52,8 +52,8 @@ const ReservationForm: React.FC<ReservationFormProps> = ({ cabin, user }) => {
 
       <form
         action={async (formData) => {
-          await createBookingWithData(formData);
           resetRange();
+          await createBookingWithData(formData);
         }}
         className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col flex-1"
       >
