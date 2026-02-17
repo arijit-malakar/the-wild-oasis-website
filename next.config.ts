@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     qualities: [80, 100],
     remotePatterns: [
       new URL(
-        "https://xabwqaljfhfvdhnvaecs.supabase.co/storage/v1/object/public/cabin-images/**"
+        "https://yiekmttlsbbkcixzzohc.supabase.co/storage/v1/object/public/cabin-images/**",
       ),
     ],
   },
