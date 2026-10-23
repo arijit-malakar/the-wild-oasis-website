@@ -1,7 +1,6 @@
-import { getCountries } from "@/app/_lib/data-service";
+import countries from "@/data/data-countries.json";
 
-interface SelectCountryProps
-  extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectCountryProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   defaultCountry: string;
 }
 
@@ -11,7 +10,6 @@ const SelectCountry: React.FC<SelectCountryProps> = async ({
   id,
   className,
 }) => {
-  const countries = await getCountries();
   const flag =
     countries.find((country) => country.name === defaultCountry)?.flag ?? "";
 

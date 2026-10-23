@@ -49,7 +49,7 @@ export const getGuest = async (email: string): Promise<GuestType> => {
 };
 
 export const createGuest = async (
-  newGuest: Pick<GuestType, "email" | "fullName">
+  newGuest: Pick<GuestType, "email" | "fullName">,
 ) => {
   const { data, error } = await supabase.from("guests").insert([newGuest]);
 
@@ -62,12 +62,12 @@ export const createGuest = async (
 };
 
 export const getBookings = async (
-  guestId: number
+  guestId: number,
 ): Promise<Omit<BookingType, "observations">[]> => {
   const { data, error } = await supabase
     .from("bookings")
     .select(
-      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, cabins(name, image)"
+      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, cabins(name, image)",
     )
     .eq("guestId", guestId)
     .order("startDate");
@@ -136,18 +136,4 @@ export const getSettings = async (): Promise<SettingsType> => {
   }
 
   return data;
-};
-
-export const getCountries = async (): Promise<
-  { name: string; flag: string }[]
-> => {
-  try {
-    const res = await fetch(
-      "https://restcountries.com/v2/all?fields=name,flag"
-    );
-    const countries = await res.json();
-    return countries;
-  } catch {
-    throw new Error("Could not fetch countries");
-  }
 };
